@@ -1,0 +1,238 @@
+import java_cup.runtime.*;
+import java.util.*;
+
+parser code {:
+  public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error");
+
+    if (info instanceof Symbol) {
+      Symbol s = ((Symbol) info);
+
+      if (s.left >= 0) {                
+        m.append(" in line "+(s.left+1));   
+        if (s.right >= 0)                    
+          m.append(", column "+(s.right+1));
+      }
+    }
+    m.append(" : "+message);
+
+    System.err.println(m);
+  }
+ 
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    System.exit(1);
+  }
+:};
+
+terminal String IDENT;
+terminal Integer CST;
+terminal Binop CMP;
+terminal IF, ELSE, RETURN, AND, OR, NOT, TYPE, STRUCT, ARROW, WHILE, SIZEOF,
+	     LP, RP, LC, RC, COMMA, EQUAL, SCOLON,
+		  PLUS, MINUS, TIMES, DIV;
+terminal UMINUS, IFTHEN;
+
+
+
+non terminal File file;
+non terminal Binop binop;
+non terminal Expr expr;
+non terminal Inst inst;
+non terminal Iblock block;
+non terminal Param param;
+non terminal Elv left_value;
+non terminal Decl decl;
+non terminal Dvar decl_var;
+non terminal Dtyp decl_typ;
+non terminal Dfct decl_fct;
+non terminal LinkedList<Expr> list_comma_expr, nonempty_list_comma_expr;
+non terminal LinkedList<Inst> list_inst;
+non terminal LinkedList<Param> list_comma_param, nonempty_list_comma_param;
+non terminal LinkedList<Decl> list_decl;
+non terminal LinkedList<Dvar> list_decl_vars;
+non terminal LinkedList<String> nonempty_list_comma_ident, nonempty_list_comma_ident_star;
+
+precedence right EQUAL;
+precedence left OR;
+precedence left AND;
+precedence left CMP;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV;
+precedence right NOT, UMINUS;
+precedence left ARROW;
+
+precedence nonassoc IFTHEN;
+precedence nonassoc ELSE;
+
+start with file;
+
+file ::=
+  list_decl:ld
+    {: RESULT = new File(ld); :}
+;
+
+list_decl ::=
+  decl:d list_decl:ld
+    {: ld.addFirst(d); RESULT = ld; :}
+|
+    {: RESULT = new LinkedList<Decl>(); :}
+;
+
+decl ::=
+  decl_var:dv
+    {: RESULT = dv; :}
+| decl_typ:dt
+    {: RESULT = dt; :}
+| decl_fct:df
+    {: RESULT = df; :}
+;
+
+decl_var ::=
+  TYPE nonempty_list_comma_ident:li SCOLON
+    {: RESULT = new Dvar("int", li); :}
+| STRUCT IDENT:i nonempty_list_comma_ident_star:li SCOLON
+    {: RESULT = new Dvar(i,li); :}
+;
+
+decl_typ ::=
+  STRUCT IDENT:i LC list_decl_vars:ld RC SCOLON
+    {: RESULT = new Dtyp(i,ld); :}
+;
+
+decl_fct ::=
+  TYPE IDENT:i LP list_comma_param:lp RP block:b
+    {: RESULT = new Dfct("int", i, lp, new Iblock(b,lp)); :}
+| STRUCT IDENT:i1 TIMES IDENT:i2 LP list_comma_param:lp RP block:b
+    {: RESULT = new Dfct(i1, i2, lp, new Iblock(b,lp)); :}
+;
+
+nonempty_list_comma_ident ::=
+  IDENT:i COMMA nonempty_list_comma_ident:li
+    {: li.addFirst(i); RESULT = li; :}
+| IDENT:i
+    {: LinkedList<String> li = new LinkedList<String>(); li.add(i); RESULT = li; :}
+;
+
+nonempty_list_comma_ident_star ::=
+  TIMES IDENT:i COMMA nonempty_list_comma_ident_star:li
+    {: li.addFirst(i); RESULT = li; :}
+| TIMES IDENT:i
+    {: LinkedList<String> li = new LinkedList<String>(); li.add(i); RESULT = li; :}
+;
+
+list_decl_vars ::=
+  decl_var:dv list_decl_vars:ldv
+    {: ldv.addFirst(dv); RESULT = ldv; :}
+|
+    {: RESULT = new LinkedList<Dvar>(); :}
+;
+
+list_comma_param ::=
+  nonempty_list_comma_param:lp
+    {: RESULT = lp; :}
+|
+    {: RESULT = new LinkedList<Param>(); :}
+;
+
+nonempty_list_comma_param ::=
+  param:p COMMA nonempty_list_comma_param:lp
+    {: lp.addFirst(p); RESULT = lp; :}
+| param:p
+    {: LinkedList<Param> lp = new LinkedList<Param>(); lp.add(p); RESULT = lp; :}
+;
+
+block ::=
+  LC list_decl_vars:ldv list_inst:li RC
+    {: RESULT = new Iblock(ldv,li); :}
+;
+
+param ::=
+  TYPE IDENT:i
+    {: RESULT = new Param("int",i); :}
+| STRUCT IDENT:i1 TIMES IDENT:i2
+    {: RESULT = new Param(i1,i2); :}
+;
+
+list_inst ::=
+  inst:i list_inst:li
+    {: li.addFirst(i); RESULT = li; :}
+|
+    {: RESULT = new LinkedList<Inst>(); :}
+;
+
+inst ::=
+  SCOLON
+    {: RESULT = new Iexpr(new Ecst(0)); :}
+| expr:e SCOLON
+    {: RESULT = new Iexpr(e); :}
+| IF LP expr:e RP inst:i
+    {: RESULT = new Iifelse(e, i, new Iexpr(new Ecst(0))); :} %prec IFTHEN
+| IF LP expr:e RP inst:i1 ELSE inst:i2
+    {: RESULT = new Iifelse(e, i1, i2); :}
+| WHILE LP expr:e RP inst:i
+    {: RESULT = new Iwhile(e, i); :}
+| block:b
+    {: RESULT = b; :}
+| RETURN expr:e SCOLON
+    {: RESULT = new Ireturn(e); :}    
+;
+
+expr ::=
+  CST:i
+    {: RESULT = new Ecst(i); :}
+| left_value:lv
+    {: RESULT = lv; :}
+| IDENT:i LP list_comma_expr:le RP
+    {: RESULT = new Ecall(i,le); :}
+| NOT expr:e
+    {: RESULT = new Enot(e); :}
+| MINUS expr:e
+    {: RESULT = new Emin(e); :} %prec UMINUS
+| expr:e1 binop:op expr:e2
+    {: RESULT = new Ebinop(op,e1,e2); :}
+| SIZEOF LP STRUCT IDENT:i RP
+    {: RESULT = new Esizeof(i); :}
+| LP expr:e RP
+    {: RESULT = e; :}
+;
+
+left_value ::=
+  IDENT:i
+    {: RESULT = new LVident(i); :}
+| expr:e ARROW IDENT:i
+    {: RESULT = new LVarrow(e,i); :}
+;
+
+list_comma_expr ::=
+  nonempty_list_comma_expr:le
+    {: RESULT = le; :}
+|
+    {: RESULT = new LinkedList<Expr>(); :}
+;
+
+nonempty_list_comma_expr ::=
+  expr:e COMMA nonempty_list_comma_expr:le
+    {: le.addFirst(e); RESULT = le; :}
+| expr:e
+    {: LinkedList<Expr> le = new LinkedList<Expr>(); le.add(e); RESULT = le; :}
+;
+
+binop ::=
+  EQUAL
+    {: RESULT = Binop.Baff;:}
+| CMP:c
+    {: RESULT = c; :}
+| PLUS
+    {: RESULT = Binop.Badd;:}
+| MINUS
+    {: RESULT = Binop.Bsub; :}
+| TIMES
+    {: RESULT = Binop.Bmul;:}
+| DIV
+    {: RESULT = Binop.Bdiv;:}
+| AND
+    {: RESULT = Binop.Band;:}
+| OR
+    {: RESULT = Binop.Bor;:}
+;
