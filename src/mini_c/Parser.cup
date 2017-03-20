@@ -27,13 +27,13 @@ parser code {:
 
 terminal String IDENT;
 terminal Integer CST;
-terminal Binop CMP;
-terminal IF, ELSE, RETURN, AND, OR, NOT, TYPE, STRUCT, ARROW, WHILE, SIZEOF,
-	     LP, RP, LC, RC, COMMA, EQUAL, SCOLON,
-		  PLUS, MINUS, TIMES, DIV;
+terminal IF, ELSE, RETURN,
+          AND, OR, NOT,
+          EQ, NE, LT, LE, GT, GE,
+          TYPE, STRUCT, ARROW, WHILE, SIZEOF,
+          LP, RP, LC, RC, COMMA, EQUAL, SCOLON,
+		      PLUS, MINUS, TIMES, DIV;
 terminal UMINUS, IFTHEN;
-
-
 
 non terminal File file;
 non terminal Binop binop;
@@ -56,7 +56,8 @@ non terminal LinkedList<String> nonempty_list_comma_ident, nonempty_list_comma_i
 precedence right EQUAL;
 precedence left OR;
 precedence left AND;
-precedence left CMP;
+precedence left EQ, NE;
+precedence left LT, LE, GT, GE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence right NOT, UMINUS;
@@ -163,11 +164,11 @@ list_inst ::=
 
 inst ::=
   SCOLON
-    {: RESULT = new Iexpr(new Ecst(0)); :}
+    {: RESULT = new Iexpr(); :}
 | expr:e SCOLON
     {: RESULT = new Iexpr(e); :}
 | IF LP expr:e RP inst:i
-    {: RESULT = new Iifelse(e, i, new Iexpr(new Ecst(0))); :} %prec IFTHEN
+    {: RESULT = new Iifelse(e, i); :} %prec IFTHEN
 | IF LP expr:e RP inst:i1 ELSE inst:i2
     {: RESULT = new Iifelse(e, i1, i2); :}
 | WHILE LP expr:e RP inst:i
@@ -220,19 +221,29 @@ nonempty_list_comma_expr ::=
 
 binop ::=
   EQUAL
-    {: RESULT = Binop.Baff;:}
-| CMP:c
-    {: RESULT = c; :}
+    {: RESULT = Binop.Baff; :}
+| EQ
+    {: RESULT = Binop.Beq; :}
+| NE
+    {: RESULT = Binop.Bne; :}
+| LT
+    {: RESULT = Binop.Blt; :}
+| LE
+    {: RESULT = Binop.Ble; :}
+| GT
+    {: RESULT = Binop.Bgt; :}
+| GE
+    {: RESULT = Binop.Bge; :}
 | PLUS
-    {: RESULT = Binop.Badd;:}
+    {: RESULT = Binop.Badd; :}
 | MINUS
     {: RESULT = Binop.Bsub; :}
 | TIMES
-    {: RESULT = Binop.Bmul;:}
+    {: RESULT = Binop.Bmul; :}
 | DIV
-    {: RESULT = Binop.Bdiv;:}
+    {: RESULT = Binop.Bdiv; :}
 | AND
-    {: RESULT = Binop.Band;:}
+    {: RESULT = Binop.Band; :}
 | OR
-    {: RESULT = Binop.Bor;:}
+    {: RESULT = Binop.Bor; :}
 ;

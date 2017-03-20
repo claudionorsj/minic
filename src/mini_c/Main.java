@@ -15,7 +15,6 @@ public class Main{
 			else
 				file = s;
 		}
-
 		java.io.Reader reader = new java.io.FileReader(file);
 		Lexer lexer = new Lexer(reader);
 		Parser parser = new Parser(lexer);
@@ -30,6 +29,14 @@ public class Main{
 				System.err.println(error);
 			if(errors.size() != 0)
 				System.exit(1);
+			if(!type_only){
+				f.generate_rtl();
+				f.generate_ertl();
+				LTLfile ltlfile = f.generate_ltl();
+				X86_64 asm = new X86_64();
+				Lin lin = new Lin(ltlfile,asm,file.substring(0, file.lastIndexOf('.')).concat(".s"));
+				lin.translate();
+			}
 		}
 	}
 }

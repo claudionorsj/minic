@@ -2,6 +2,7 @@ package mini_c;
 
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 class Iblock extends Inst {
   final LinkedList<Dvar> list_decl_var;
@@ -35,5 +36,15 @@ class Iblock extends Inst {
       inst.semantic_analysis(errors);
 
     list_context.removeLast();
+  }
+
+  Label generate_rtl(Label next_l, Register return_r, Label return_l){
+    for(Dvar dvar : list_decl_var)
+      dvar.generate_rtl();
+    Iterator<Inst> inst_it = list_inst.descendingIterator();
+    Label aux_l = next_l;
+    while(inst_it.hasNext())
+      aux_l = inst_it.next().generate_rtl(aux_l,return_r,return_l);
+    return aux_l;
   }
 }

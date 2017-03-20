@@ -25,29 +25,29 @@ class Dtyp extends Decl {
       // create context to the struct fields
       list_context.add(new HashMap<String,String>());
 
-      // stores number of errors before semantic analysis on the struct fields
-      int number_of_errors_before = errors.size();
-
       // map of struct fields and their types to add to the types map
-      HashMap<String,String> map_fields = new HashMap<String,String>();
+      HashMap<String,String> map_fields_types = new HashMap<String,String>();
+      LinkedList<String> list_field = new LinkedList<String>();
 
       for(Dvar dvar : list_decl_var){
         // check for errors in each variable declaration
         dvar.semantic_analysis(errors);
 
-        // adds field names and type to map if no error was found to this point
-        if(errors.size() == number_of_errors_before)
-          for(String ident : dvar.list_ident)
-            map_fields.put(ident,dvar.type);
+        // adds field names and type to map
+        for(String ident : dvar.list_ident){
+          map_fields_types.put(ident,dvar.type);
+          list_field.add(ident);
+        }
       }
 
       // remove context created for struct fields
       list_context.removeLast();
 
-      // if no error found in the fields, add struct to the map of types
-      if(errors.size() == number_of_errors_before){
-        map_structs.put(ident,map_fields);
-      }
+      // add struct to the map of types
+      map_structs_maps_fields_types.put(ident,map_fields_types);
+      map_structs_lists_field.put(ident,list_field);
     }
   }
+
+  void generate_rtl(){}
 }

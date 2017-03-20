@@ -69,9 +69,9 @@ public class Register {
 //	static final Register r14 = new Register("%r14");
 //	static final Register r15 = new Register("%r15");
 
-	static final List<Register> callee_save = new LinkedList<Register>();
+	static final List<Register> callee_saved = new LinkedList<Register>();
 	static {
-		callee_save.add(rbx); callee_save.add(r12);
+		callee_saved.add(rbx); callee_saved.add(r12);
 		// callee_save.add(r13); callee_save.add(r14); callee_save.add(r15);
 	}
 
@@ -79,7 +79,7 @@ public class Register {
 	static final List<Register> allocatable = new LinkedList<Register>();
 	static {
 		for (Register r: caller_save) allocatable.add(r);
-		for (Register r: callee_save) allocatable.add(r);
+		for (Register r: callee_saved) allocatable.add(r);
 	}
 	
 	static final Register rsp = new Register("%rsp");

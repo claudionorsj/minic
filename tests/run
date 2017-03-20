@@ -74,13 +74,13 @@ for f in syntax/bad/*.c; do
     max=`expr $max + 1`;
     compile --parse-only $f;
     case $? in
-	"0")
-	echo
-	echo "ECHEC sur "$f" (devrait échouer)";;
-	"1") score=`expr $score + 1`;;
-	*)
-	echo
-	echo "ECHEC sur "$f" (pour une mauvaise raison)";;
+  "0")
+  echo
+  echo "ECHEC sur "$f" (devrait échouer)";;
+  "1") score=`expr $score + 1`;;
+  *)
+  echo
+  echo "ECHEC sur "$f" (pour une mauvaise raison)";;
     esac
 done
 echo
@@ -92,13 +92,13 @@ for f in syntax/good/*.c typing/bad/*.c typing/good/*.c exec/*.c exec-fail/*.c; 
     max=`expr $max + 1`;
     compile --parse-only $f;
     case $? in
-	"1")
-	echo
-	echo "ECHEC sur "$f" (devrait reussir)";;
-	"0") score=`expr $score + 1`;;
-	*)
-	echo
-	echo "ECHEC sur "$f" (pour une mauvaise raison)";;
+  "1")
+  echo
+  echo "ECHEC sur "$f" (devrait reussir)";;
+  "0") score=`expr $score + 1`;;
+  *)
+  echo
+  echo "ECHEC sur "$f" (pour une mauvaise raison)";;
     esac
 done
 echo
@@ -124,13 +124,13 @@ for f in typing/bad/*.c; do
     max=`expr $max + 1`;
     compile --type-only $f;
     case $? in
-	"0")
-	echo
-	echo "ECHEC sur "$f" (devrait échouer)";;
-	"1") score=`expr $score + 1`;;
-	*)
-	echo
-	echo "ECHEC sur "$f" (pour une mauvaise raison)";;
+  "0")
+  echo
+  echo "ECHEC sur "$f" (devrait échouer)";;
+  "1") score=`expr $score + 1`;;
+  *)
+  echo
+  echo "ECHEC sur "$f" (pour une mauvaise raison)";;
     esac
 done
 echo
@@ -142,13 +142,13 @@ for f in typing/good/*.c exec/*.c exec-fail/*.c; do
     max=`expr $max + 1`;
     compile --type-only $f;
     case $? in
-	"1")
-	echo
-	echo "ECHEC sur "$f" (devrait reussir)";;
-	"0") score=`expr $score + 1`;;
-	*)
-	echo
-	echo "ECHEC sur "$f" (pour une mauvaise raison)";;
+  "1")
+  echo
+  echo "ECHEC sur "$f" (devrait reussir)";;
+  "0") score=`expr $score + 1`;;
+  *)
+  echo
+  echo "ECHEC sur "$f" (pour une mauvaise raison)";;
     esac
 done
 echo
@@ -176,33 +176,33 @@ echo "-----------------"
 # timeout="why3-cpulimit 30 0 -h"
 
 for f in exec/*.c; do
-    echo -n "."
-    asm=exec/`basename $f .c`.s
-    rm -f $asm
-    expected=exec/`basename $f .c`.out
-    max=`expr $max + 1`;
-    if compile $f; then
-	rm -f out
-	score_comp=`expr $score_comp + 1`;
-	if gcc $asm && ./a.out > out; then
-	    score_out=`expr $score_out + 1`;
-	    if cmp --quiet out $expected; then
-		score_test=`expr $score_test + 1`;
-	    else
-		echo
-		echo "ECHEC : mauvaise sortie pour $f"
-	    fi
-	else
-		echo
-		echo "ECHEC du code produit pour $f"
-	fi
+  echo -n "."
+  asm=exec/`basename $f .c`.s
+  rm -f $asm
+  expected=exec/`basename $f .c`.out
+  max=`expr $max + 1`;
+  if compile $f; then
+    rm -f out
+    score_comp=`expr $score_comp + 1`;
+    if gcc $asm && ./a.out > out; then
+      score_out=`expr $score_out + 1`;
+      if cmp --quiet out $expected; then
+        score_test=`expr $score_test + 1`;
+      else
+        echo
+        echo "ECHEC : mauvaise sortie pour $f"
+      fi
     else
-	echo
-	echo "ECHEC de la compilation sur $f (devrait réussir)"
+      echo
+      echo "ECHEC du code produit pour $f"
     fi
+  else
+    echo
+    echo "ECHEC de la compilation sur $f (devrait réussir)"
+  fi
 done
-echo
 
+echo
 echo "Execution conduisant à un échec"
 echo "-------------------------------"
 
@@ -212,17 +212,17 @@ for f in exec-fail/*.c; do
     rm -f $asm
     max=`expr $max + 1`;
     if compile $f && gcc $asm; then
-	score_comp=`expr $score_comp + 1`;
-	if ./a.out > out; then
-	    echo
-	    echo "ECHEC : le code $f devrait échouer"
-	else
-	    score_test=`expr $score_test + 1`;
-	    score_out=`expr $score_out + 1`;
-	fi
+  score_comp=`expr $score_comp + 1`;
+  if ./a.out > out; then
+      echo
+      echo "ECHEC : le code $f devrait échouer"
+  else
+      score_test=`expr $score_test + 1`;
+      score_out=`expr $score_out + 1`;
+  fi
     else
-	echo
-	echo "ECHEC de la compilation sur $f (devrait réussir)"
+  echo
+  echo "ECHEC de la compilation sur $f (devrait réussir)"
     fi
 done
 
@@ -246,18 +246,18 @@ case $option in
     "-3" )
         partie3;;
     "-v1" )
-	verbose=1;
-	partie1;;
+  verbose=1;
+  partie1;;
     "-v2" )
-    	verbose=1;
+      verbose=1;
         partie2;;
     "-v3" )
-    	verbose=1;
+      verbose=1;
         partie3;;
     "-all" )
-    	partie1;
-    	partie2;
-    	partie3;;
+      partie1;
+      partie2;
+      partie3;;
     "-gcc" )
         test_gcc;;
     * )

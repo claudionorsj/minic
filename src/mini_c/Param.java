@@ -22,4 +22,6 @@ class Param extends Base {
     else
       current_context.put(ident,type);
   }
+
+  Label generate_rtl(){return null;}
 }

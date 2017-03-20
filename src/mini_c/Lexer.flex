@@ -50,8 +50,6 @@ LineTerminator     = \r | \n | \r\n
 
 WhiteSpace         = [ \t\r\n\f]+
 
-String             = "\"" [^\"]* "\""
-
 Comment            = "\/\/" .* {LineTerminator}
 
 Comment2           = "/*"( [^*] | (\*+[^*/]) )*\*+\/ 
@@ -66,7 +64,9 @@ Integer            = ( 0
                         | [1-9][:digit:]*
                         | 0 {OctalDigit}+
                         | 0x {HexaDigit}+
-                        | \' . \' )
+                     )
+
+Char               = \' . \'
 
 
 /* ' */
@@ -114,22 +114,22 @@ Integer            = ( 0
     { return symbol(DIV); }
 
     "<"
-    { return symbol(CMP, Binop.Blt); }
+    { return symbol(LT); }
 
     "<="
-    { return symbol(CMP, Binop.Ble); }
+    { return symbol(LE); }
 
     ">"
-    { return symbol(CMP, Binop.Bgt); }
+    { return symbol(GT); }
 
     ">="
-    { return symbol(CMP, Binop.Bge); }
+    { return symbol(GE); }
 
     "=="
-    { return symbol(CMP, Binop.Beq); }
+    { return symbol(EQ); }
 
     "!="
-    { return symbol(CMP, Binop.Bneq); }
+    { return symbol(NE); }
 
     "&&"
     { return symbol(AND); }
@@ -168,7 +168,10 @@ Integer            = ( 0
     { return symbol(IDENT, yytext().intern()); }
 
     {Integer}
-    { return symbol(CST, new Integer(0)); }
+    { return symbol(CST, Integer.decode(yytext())); }
+
+    {Char}
+    { return symbol(CST, (int) yytext().charAt(1)); }
 
     {WhiteSpace}
     { /* ignore */ }

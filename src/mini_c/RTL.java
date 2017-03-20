@@ -14,7 +14,7 @@ import java.util.Set;
 abstract class RTL {
   abstract void accept(RTLVisitor v);
   abstract Label[] succ();
-  }
+}
 
 /** charge une constante dans un registre */
 class Rconst extends RTL {
@@ -27,7 +27,7 @@ class Rconst extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "mov $" + i + " " + r + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** lit dans une variable globale */
 class Raccess_global extends RTL {
@@ -40,7 +40,7 @@ class Raccess_global extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "mov " + s + " " + r + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** écrit une variable globale */
 class Rassign_global extends RTL {
@@ -53,7 +53,7 @@ class Rassign_global extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "mov " + r + " " + s + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** instruction mov i(r1), r2 */
 class Rload extends RTL { 
@@ -63,13 +63,16 @@ class Rload extends RTL {
   Label l;
   
   Rload(Register r1, int i, Register r2, Label l) { 
-	this.r1 = r1; this.i = i;
-    this.r2 = r2; this.l = l;  }
+    this.r1 = r1;
+    this.r2 = r2;
+    this.i = i;
+    this.l = l;
+}
   
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "mov " + i + "(" + r1 + ") " + r2 + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** instruction mov r1, i(r2) */
 class Rstore extends RTL {
@@ -78,13 +81,17 @@ class Rstore extends RTL {
   int i;
   Label l;
   
-  Rstore(Register r1, Register r2, int i, Label l) { this.r1 = r1;
-    this.r2 = r2; this.i = i; this.l = l;  }
+  Rstore(Register r1, Register r2, int i, Label l) {
+    this.r1 = r1;
+    this.r2 = r2;
+    this.i = i;
+    this.l = l;
+  }
   
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "mov " + r1 + " " + i + "(" + r2 + ") " + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** instruction x86-64 unaire */
 class Rmunop extends RTL {
@@ -97,7 +104,7 @@ class Rmunop extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return m + " " + r + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** instruction x86-64 binaire */
 class Rmbinop extends RTL {
@@ -112,7 +119,7 @@ class Rmbinop extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return m + " " + r1 + " " + r2 + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** instruction x86-64 de branchement (unaire) */
 class Rmubranch extends RTL {
@@ -127,7 +134,7 @@ class Rmubranch extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return m + " " + r + " --> " + l1 + ", " + l2; }
   Label[] succ() { return new Label[] { l1, l2 }; }
-  }
+}
 
 /** instruction x86-64 de branchement (binaire) */
 class Rmbbranch extends RTL {
@@ -143,7 +150,7 @@ class Rmbbranch extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return m + " " + r1 + " " + r2 + " --> " + l1 + ", " + l2; }
   Label[] succ() { return new Label[] { l1, l2 }; }
-  }
+}
 
 /** appel de fonction */
 class Rcall extends RTL {
@@ -158,7 +165,7 @@ class Rcall extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return r + " <- call " + s + rl + " --> " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** saut inconditionnel */
 class Rgoto extends RTL {
@@ -169,7 +176,7 @@ class Rgoto extends RTL {
   void accept(RTLVisitor v) { v.visit(this); }
   public String toString() { return "goto " + l; }
   Label[] succ() { return new Label[] { l }; }
-  }
+}
 
 /** une fonction RTL */
 
@@ -193,7 +200,7 @@ class RTLfun {
     this.name = name;
     this.formals = new LinkedList<>();
     this.locals = new HashSet<>();
-    }
+  }
   
   void accept(RTLVisitor v) { v.visit(this); }
   
@@ -216,14 +223,15 @@ class RTLfile {
   
   RTLfile() {
     this.gvars = new LinkedList<String>();
-    this.funs = new LinkedList<RTLfun>();  }
+    this.funs = new LinkedList<RTLfun>();
+  }
   
   void accept(RTLVisitor v) { v.visit(this); }
 
   /** pour débugger */
   void print() {
-	for (RTLfun fun: this.funs)
-	  fun.print();
+  	for (RTLfun fun: this.funs)
+  	  fun.print();
   }
 }
 
@@ -277,7 +285,7 @@ interface RTLVisitor {
   public void visit(Rgoto o);
   public void visit(RTLfun o);
   public void visit(RTLfile o);
-  }
+}
 
 /** un visiteur du code RTL qui ne fait rien */
 class EmptyRTLVisitor implements RTLVisitor {
@@ -294,4 +302,4 @@ class EmptyRTLVisitor implements RTLVisitor {
   public void visit(Rgoto o) {}
   public void visit(RTLfun o) {}
   public void visit(RTLfile o) {}
-  }
+}

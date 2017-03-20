@@ -48,6 +48,16 @@ class Mjlei  extends Mubranch {
 	Mjlei(int n) { this.n = n;}
 	public String toString() { return "jle $" + n; } 	
 }
+class Mjgei  extends Mubranch {
+	int n;
+	Mjgei(int n) { this.n = n;}
+	public String toString() { return "jge $" + n; } 	
+}
+class Mjli extends Mubranch {
+	int n;
+	Mjli(int n) { this.n = n;}
+	public String toString() { return "jl $" + n; } 	
+}
 class Mjgi extends Mubranch {
 	int n;
 	Mjgi(int n) { this.n = n;}

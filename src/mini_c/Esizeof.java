@@ -13,22 +13,13 @@ class Esizeof extends Expr {
   }
 
   void semantic_analysis(LinkedList<String> errors){
-    Iterator rit = list_context.descendingIterator();
-    String ident_type = "";
-
-    while(rit.hasNext()){
-      HashMap<String,String> context = (HashMap<String,String>) rit.next();
-      if(context.containsKey(ident)){
-        ident_type = context.get(ident);
-        break;
-      }
-    }
-    
-    if(ident_type.equals(""))
-      errors.add("No variable " + ident);
-    else if(!map_structs.containsKey(ident))
-      errors.add(ident + " is not a struct");
+    if(!map_structs_lists_field.containsKey(ident))
+      errors.add("No struct " + ident);
     else
       type = "int";
+  }
+
+  Label generate_rtl(Register value_r, Label next_l){
+    return current_rtlgraph.add(new Rconst(8*map_structs_lists_field.get(ident).size(),value_r,next_l));
   }
 }

@@ -16,4 +16,8 @@ class Ecst extends Expr {
     else
       this.type = "int";
   }
+
+  Label generate_rtl(Register value_r, Label next_l){
+    return current_rtlgraph.add(new Rconst(cst,value_r,next_l));
+  }
 }
