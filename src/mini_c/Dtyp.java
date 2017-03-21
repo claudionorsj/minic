@@ -48,6 +48,4 @@ class Dtyp extends Decl {
       map_structs_lists_field.put(ident,list_field);
     }
   }
-
-  void generate_rtl(){}
 }

@@ -12,12 +12,12 @@ mul:
 	imulq %rsi, %rdi
 	movq $8192, %rax
 	movq $2, %rcx
-	movq $0, %rdx
+	cqto
 	idivq %rcx
 	addq %rax, %rdi
 	movq $8192, %rcx
 	movq %rdi, %rax
-	movq $0, %rdx
+	cqto
 	idivq %rcx
 	movq %rax, %rdi
 	movq %rdi, %rax
@@ -27,11 +27,11 @@ div:
 	imulq %rcx, %rdi
 	movq %rsi, %rax
 	movq $2, %rcx
-	movq $0, %rdx
+	cqto
 	idivq %rcx
 	addq %rax, %rdi
 	movq %rdi, %rax
-	movq $0, %rdx
+	cqto
 	idivq %rsi
 	movq %rax, %rdi
 	movq %rdi, %rax
@@ -46,14 +46,14 @@ iter:
 	movq %rdi, 0(%rsp)
 	movq %rsi, 8(%rsp)
 	movq %rdx, 16(%rsp)
-	movq %rcx, 32(%rsp)
+	movq %rcx, 24(%rsp)
 	movq %r8, 40(%rsp)
 	movq 0(%rsp), %rdi
 	subq $100, %rdi
 	cmpq $0, %rdi
 	je L71
-	movq 32(%rsp), %rdi
-	movq 32(%rsp), %rsi
+	movq 24(%rsp), %rdi
+	movq 24(%rsp), %rsi
 	call mul
 	movq %rax, 56(%rsp)
 	movq 40(%rsp), %rdi
@@ -63,10 +63,10 @@ iter:
 	movq 56(%rsp), %rdi
 	movq 48(%rsp), %rsi
 	call add
-	movq %rax, 24(%rsp)
+	movq %rax, 32(%rsp)
 	movq $4, %rdi
 	call of_int
-	movq 24(%rsp), %rbp
+	movq 32(%rsp), %rbp
 	cmpq %rbp, %rax
 	jl L56
 	addq $1, 0(%rsp)
@@ -80,7 +80,7 @@ iter:
 	movq $2, %rdi
 	call of_int
 	movq %rax, 72(%rsp)
-	movq 32(%rsp), %rdi
+	movq 24(%rsp), %rdi
 	movq 40(%rsp), %rsi
 	call mul
 	movq %rax, %rsi

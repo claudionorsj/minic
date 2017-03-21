@@ -3,29 +3,16 @@ package mini_c;
 import java.util.HashSet;
 
 class Lin implements LTLVisitor {
-  LTLfile ltlfile;
-  private LTLgraph cfg;
+  private LTLfile ltlfile;
+  private LTLgraph ltlgraph;
   private X86_64 asm;
   private HashSet<Label> visited;
-  String s;
 
-  Lin(LTLfile ltlfile, X86_64 asm, String s){
-    this.ltlfile = ltlfile;
-    this.asm = asm;
-    this.s = s;
+  X86_64 translate_file(LTLfile ltlfile){
+    asm = new X86_64();
     visited = new HashSet<Label>();
-  }
-
-  void translate(){
-    asm.globl("main");
-    for(String glob : ltlfile.gvars)
-       asm.dlabel(glob).quad(0);
-    for(LTLfun ltlfun : ltlfile.funs){
-      cfg = ltlfun.body;
-      asm.label(ltlfun.name);
-      lin(ltlfun.entry);
-    }
-    asm.printToFile(s);
+    ltlfile.accept(this);
+    return asm;
   }
 
   private void lin(Label l) {
@@ -36,7 +23,7 @@ class Lin implements LTLVisitor {
     else{
       visited.add(l);
       asm.label(l);
-      cfg.graph.get(l).accept(this);
+      ltlgraph.graph.get(l).accept(this);
     }
   }
 
@@ -151,6 +138,7 @@ class Lin implements LTLVisitor {
       asm.imulq(s1,s2);
     }
     else if(o.m == Mbinop.Mdiv){
+      asm.cqto();
       asm.idivq(s1);
     }
     else if(o.m == Mbinop.Msete){
@@ -183,8 +171,18 @@ class Lin implements LTLVisitor {
     asm.call(o.s);
     lin(o.l);
   }
-  public void visit(LTLfun o) {}
-  public void visit(LTLfile o) {}
+  public void visit(LTLfun o) {
+    ltlgraph = o.body;
+    asm.label(o.name);
+    lin(o.entry);
+  }
+  public void visit(LTLfile o) {
+    asm.globl("main");
+    for(String glob : o.gvars)
+       asm.dlabel(glob).quad(0);
+    for(LTLfun ltlfun : o.funs)
+      ltlfun.accept(this);
+  }
 
   void jcc(Mbbranch m, String s1, String s2, Label l, boolean inverse){
     asm.cmpq(s1,s2);

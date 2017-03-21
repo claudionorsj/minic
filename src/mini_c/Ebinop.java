@@ -44,7 +44,6 @@ class Ebinop extends Expr {
   }
 
   Label generate_rtl(Register value_r, Label next_l){
-    
     if(binop == Binop.Baff){
       Label aux_l;
       if(expr1 instanceof LVident){
@@ -114,6 +113,7 @@ class Ebinop extends Expr {
     }
   }
 
+  // generates the branchment rtl
   Label generate_rtl_c(Label true_l, Label false_l){
     if(binop == Binop.Band){
       return expr1.generate_rtl_c(expr2.generate_rtl_c(true_l,false_l),false_l);
@@ -132,6 +132,7 @@ class Ebinop extends Expr {
       return super.generate_rtl_c(true_l,false_l);
   }
 
+  // changes the binary branchment into unary branchment when right hand side expression is constant
   Label binop_cmp_cst_rtl_c(Binop binop, Expr expr1, Ecst expr2, Label true_l, Label false_l){
     Register r = new Register();
     int cst = expr2.cst;
@@ -155,6 +156,8 @@ class Ebinop extends Expr {
     return expr1.generate_rtl(r,aux_l);
   }
 
+  // if the constant is the on the left side just take change the order of expressions and the operation accordingly
+  // and call binop_cmp_cst_rtl_c for the constant on the second argument
   Label binop_cmp_cst_rtl_c(Binop binop, Ecst expr1, Expr expr2, Label true_l, Label false_l){
     if(binop == Binop.Ble)
       binop = Binop.Bge;
@@ -167,6 +170,7 @@ class Ebinop extends Expr {
     return binop_cmp_cst_rtl_c(binop,expr2,expr1,true_l,false_l);
   }
 
+  // genreates branchment for comparation binary operations
   Label binop_cmp_rtl_c(Binop binop, Expr expr1, Expr expr2, Label true_l, Label false_l){
     Register r1 = new Register();
     Register r2 = new Register();

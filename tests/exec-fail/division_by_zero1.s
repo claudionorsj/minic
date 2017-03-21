@@ -5,7 +5,7 @@ main:
 	movq $1, %rdi
 	movq $0, %rcx
 	movq %rdi, %rax
-	movq $0, %rdx
+	cqto
 	idivq %rcx
 	movq %rax, %rdi
 	call putchar

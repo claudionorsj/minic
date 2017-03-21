@@ -19,25 +19,31 @@ public class Main{
 		java.io.Reader reader = new java.io.FileReader(file);
 		Lexer lexer = new Lexer(reader);
 		Parser parser = new Parser(lexer);
-		// syntax analysis
+		// performs parsing and syntax analysis
 		File f = (File) parser.parse().value;
 
-		if(!parse_only){
-			LinkedList<String> errors = new LinkedList<String>();
-			//semantic_analysis
-			f.semantic_analysis(errors);
-			for(String error : errors)
-				System.err.println(error);
-			if(errors.size() != 0)
-				System.exit(1);
-			if(!type_only){
-				RTLfile rtlfile = f.generate_rtl();
-				f.generate_ertl();
-				LTLfile ltlfile = f.generate_ltl();
-				X86_64 asm = new X86_64();
-				Lin lin = new Lin(ltlfile,asm,file.substring(0, file.lastIndexOf('.')).concat(".s"));
-				lin.translate();
-			}
-		}
+		// ends execution is parse_only is true
+		if(parse_only)
+			return;
+
+		LinkedList<String> errors = new LinkedList<String>();
+		// performs the semantic analysis
+		f.semantic_analysis(errors);
+		// if there is any error, print and then return 1
+		for(String error : errors)
+			System.err.println(error);
+		if(errors.size() != 0)
+			System.exit(1);
+
+		// ends execution is type_only is true
+		if(type_only)
+			return;
+
+		// preforms the compilation
+		RTLfile rtlfile = f.generate_rtl();
+		ERTLfile ertlfile = (new ToERTL()).translate_file(rtlfile);
+		LTLfile ltlfile = (new ToLTL()).translate_file(ertlfile);
+		X86_64 asm = (new Lin()).translate_file(ltlfile);
+		asm.printToFile(file.substring(0, file.lastIndexOf('.')).concat(".s"));
 	}
 }

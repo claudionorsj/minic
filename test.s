@@ -1,8 +1,6 @@
 	.text
 	.globl main
 main:
-	movq $2, %rax
-	movq $104, %rdi
-	imulq %rdi, %rax
+	movq $42, %rax
 	ret
 	.data

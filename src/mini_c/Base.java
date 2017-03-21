@@ -4,45 +4,38 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-// has all global fields
+// has all global fields for rtl generation
 abstract class Base{
   // list of maps from identifiers to types
-  static LinkedList<HashMap<String,String>> list_context = new LinkedList<HashMap<String,String>>();
+  static LinkedList<HashMap<String,String>> list_context;
 
   // set of defined types
-  static HashSet<String> set_types = new HashSet<String>();
-
-  // map of defined structs to its map of fields to type
-  static HashMap<String,HashMap<String,String>> map_structs_maps_fields_types = new HashMap<String,HashMap<String,String>>();
+  static HashSet<String> set_types;
 
   // map of defined structs to list of its fields
-  static HashMap<String,LinkedList<String>> map_structs_lists_field = new HashMap<String,LinkedList<String>>();
+  static HashMap<String,LinkedList<String>> map_structs_lists_field;
+
+  // map of defined structs to its map of fields to type
+  static HashMap<String,HashMap<String,String>> map_structs_maps_fields_types;  
 
   // map of defined functions to its map of parameters to type
-  static HashMap<String,LinkedList<Param>> map_fcts_params = new HashMap<String,LinkedList<Param>>();
+  static HashMap<String,LinkedList<Param>> map_fcts_params;
 
-  static String current_fct = "";
+  // map functions identifiers to a set of its locals
+  static HashMap<String,HashSet<String>> map_fcts_locals;
 
-  static HashMap<String,HashSet<String>> map_fcts_locals = new HashMap<String,HashSet<String>>();
+  // map from local identifiers to registers
+  static HashMap<String,Register> map_locals_registers;
 
+  // strores the name of current function being translated
+  static String current_fct;  
+
+  // stores the graph of the current function being translated
   static RTLgraph current_rtlgraph;
 
-  static RTLfile rtlfile = new RTLfile();
+  // stores the rtlfile being generated
+  static RTLfile rtlfile;
 
-  // map from identifiers to registers
-  static HashMap<String,Register> map_locals_registers = new HashMap<String,Register>();
-
-  static ERTLfile ertlfile = new ERTLfile();
-
-  static ERTLgraph current_ertlgraph;
-
-  static Coloring current_color;
-
-  static LTLfile ltlfile = new LTLfile();
-
-  static LTLgraph current_ltlgraph;
-
-  static int activation_table_size;
-
+  // imposes all classes to have semantic analysis implemented that gets a list of errors to be thrown at the end
   abstract void semantic_analysis(LinkedList<String> errors);
 }

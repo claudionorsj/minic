@@ -1,2 +1,0 @@
-#!/bin/bash
-java -cp /home/claudionor/x/inf564/minic/src:../lib/java-cup-11b-runtime.jar mini_c.Main $@

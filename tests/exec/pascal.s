@@ -87,7 +87,7 @@ mod7:
 	movq $7, %rsi
 	movq %rdi, %rax
 	movq $7, %rcx
-	movq $0, %rdx
+	cqto
 	idivq %rcx
 	imulq %rax, %rsi
 	subq %rsi, %rdi

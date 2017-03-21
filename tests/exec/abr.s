@@ -110,7 +110,7 @@ print_int:
 	movq %rdi, 0(%rsp)
 	movq 0(%rsp), %rax
 	movq $10, %rdi
-	movq $0, %rdx
+	cqto
 	idivq %rdi
 	movq %rax, 8(%rsp)
 	movq 0(%rsp), %rdi

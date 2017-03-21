@@ -60,7 +60,6 @@ class Dfct extends Decl {
     rtlfun.result = return_r;
     rtlfun.exit = return_l;
     rtlfun.body = current_rtlgraph;
-    //rtlfun.print();
     rtlfile.funs.add(rtlfun);
   }
 }

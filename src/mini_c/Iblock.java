@@ -39,8 +39,6 @@ class Iblock extends Inst {
   }
 
   Label generate_rtl(Label next_l, Register return_r, Label return_l){
-    for(Dvar dvar : list_decl_var)
-      dvar.generate_rtl();
     Iterator<Inst> inst_it = list_inst.descendingIterator();
     Label aux_l = next_l;
     while(inst_it.hasNext())

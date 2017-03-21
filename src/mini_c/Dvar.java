@@ -22,8 +22,6 @@ class Dvar extends Decl {
     boolean global = list_context.size() == 1 ? true : false;
 
     for(String ident : list_ident){
-      if(global)
-        rtlfile.gvars.add(ident);
       // adds error if identifier already used in the current context
       if(current_context.containsKey(ident))
         errors.add("Multiple declarations of " + ident);
@@ -37,6 +35,4 @@ class Dvar extends Decl {
       }
     }
   }
-
-  void generate_rtl(){}
 }
