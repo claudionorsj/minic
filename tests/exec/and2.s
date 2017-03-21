@@ -48,17 +48,13 @@ L6:
 L8:
 	movq $0, %rdi
 	jmp L6
-	jmp L8
 L16:
 	movq $0, %rdi
 	jmp L14
-	jmp L16
 L24:
 	movq $0, %rdi
 	jmp L22
-	jmp L24
 L32:
 	movq $0, %rdi
 	jmp L30
-	jmp L32
 	.data

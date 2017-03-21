@@ -43,26 +43,22 @@ L10:
 	jne L7
 	movq $0, %rdi
 	jmp L6
-	jmp L7
 L18:
 	movq $0, %rdi
 	cmpq $0, %rdi
 	jne L15
 	movq $0, %rdi
 	jmp L14
-	jmp L15
 L26:
 	movq $2, %rdi
 	cmpq $0, %rdi
 	jne L23
 	movq $0, %rdi
 	jmp L22
-	jmp L23
 L34:
 	movq $1, %rdi
 	cmpq $0, %rdi
 	jne L31
 	movq $0, %rdi
 	jmp L30
-	jmp L31
 	.data

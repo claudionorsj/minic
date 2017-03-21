@@ -39,15 +39,19 @@ L22:
 	movq 0(%rsp), %rdi
 	cmpq $0, %rdi
 	je L18
+L16:
 	movq $69, %rdi
 	movq %rdi, 0(%rsp)
+L14:
 	movq 0(%rsp), %rdi
 	call putchar
 	movq 0(%rsp), %rdi
 	cmpq $0, %rdi
 	je L10
+L8:
 	movq $70, %rdi
 	movq %rdi, 0(%rsp)
+L6:
 	movq 0(%rsp), %rdi
 	call putchar
 	movq $10, %rdi
@@ -65,9 +69,4 @@ L18:
 	cmpq $0, %rdi
 	je L14
 	jmp L16
-	jmp L22
-	jmp L22
-	jmp L30
-	jmp L30
-	jmp L38
 	.data

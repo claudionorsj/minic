@@ -84,17 +84,14 @@ L51:
 	call putchar
 	jmp L49
 mod7:
-	movq %rbx, %rcx
-	movq $7, %r8
-	movq %rdi, %rax
 	movq $7, %rsi
-	movq %rdx, %rbx
-	movq $0, %rdx
-	idivq %rsi
-	imulq %rax, %r8
-	subq %r8, %rdi
 	movq %rdi, %rax
-	movq %rcx, %rbx
+	movq $7, %rcx
+	movq $0, %rdx
+	idivq %rcx
+	imulq %rax, %rsi
+	subq %rsi, %rdi
+	movq %rdi, %rax
 	ret
 compute_row:
 	subq $24, %rsp

@@ -1,6 +1,7 @@
 package mini_c;
 
 import java.util.LinkedList;
+import java_cup.runtime.*;
 
 public class Main{
 	public static void main(String[] args) throws Exception{
@@ -30,7 +31,7 @@ public class Main{
 			if(errors.size() != 0)
 				System.exit(1);
 			if(!type_only){
-				f.generate_rtl();
+				RTLfile rtlfile = f.generate_rtl();
 				f.generate_ertl();
 				LTLfile ltlfile = f.generate_ltl();
 				X86_64 asm = new X86_64();

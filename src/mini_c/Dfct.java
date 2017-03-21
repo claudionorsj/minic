@@ -52,7 +52,7 @@ class Dfct extends Decl {
     Register return_r = new Register();
     Label return_l = new Label();
     current_rtlgraph = new RTLgraph();
-    Label entry_l = block.generate_rtl(null,return_r,return_l);
+    Label entry_l = block.generate_rtl(return_l,return_r,return_l);
     RTLfun rtlfun = new RTLfun(ident);
     rtlfun.formals = list_param_register;
     rtlfun.locals = set_locals_registers;

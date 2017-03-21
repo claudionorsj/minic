@@ -129,30 +129,28 @@ L86:
 	ret
 print_int:
 	subq $16, %rsp
-	movq %rbx, 0(%rsp)
-	movq %rdi, 8(%rsp)
-	movq 8(%rsp), %rax
+	movq %rdi, 0(%rsp)
+	movq 0(%rsp), %rax
 	movq $10, %rdi
-	movq %rdx, %rbx
 	movq $0, %rdx
 	idivq %rdi
-	movq %rax, %rbx
-	movq 8(%rsp), %rdi
+	movq %rax, 8(%rsp)
+	movq 0(%rsp), %rdi
 	cmpq $9, %rdi
 	jg L123
 L121:
-	movq 8(%rsp), %rdi
-	movq $10, %rcx
-	imulq %rbx, %rcx
-	subq %rcx, %rdi
+	movq 0(%rsp), %rdi
+	movq $10, %rsi
+	movq 8(%rsp), %rcx
+	imulq %rcx, %rsi
+	subq %rsi, %rdi
 	addq $48, %rdi
 	call putchar
 	movq $0, %rax
-	movq 0(%rsp), %rbx
 	addq $16, %rsp
 	ret
 L123:
-	movq %rbx, %rdi
+	movq 8(%rsp), %rdi
 	call print_int
 	jmp L121
 main:

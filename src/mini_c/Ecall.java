@@ -28,8 +28,7 @@ class Ecall extends Expr {
     for(Expr expr : list_expr)
       list_register.add(new Register());
     Label aux_l = current_rtlgraph.add(new Rcall(value_r,ident,list_register,next_l));
-    int list_expr_size = list_expr.size();
-    for(int i = list_expr_size - 1; i >= 0; i--)
+    for(int i = list_expr.size() - 1; i >= 0; i--)
       aux_l = list_expr.get(i).generate_rtl(list_register.get(i),aux_l);
     return aux_l;
   }

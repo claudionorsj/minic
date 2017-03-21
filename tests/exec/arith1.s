@@ -8,7 +8,12 @@ main:
 	movq $8, %rdi
 	addq $100, %rdi
 	call putchar
-	movq $108, %rdi
+	movq $216, %rdi
+	movq $2, %rcx
+	movq %rdi, %rax
+	movq $0, %rdx
+	idivq %rcx
+	movq %rax, %rdi
 	call putchar
 	movq $111, %rdi
 	call putchar
@@ -19,7 +24,12 @@ main:
 	subq %rcx, %rdi
 	addq $118, %rdi
 	call putchar
-	movq $11, %rdi
+	movq $122, %rdi
+	movq $11, %rcx
+	movq %rdi, %rax
+	movq $0, %rdx
+	idivq %rcx
+	movq %rax, %rdi
 	addq $100, %rdi
 	call putchar
 	movq $1, %rdi

@@ -137,7 +137,6 @@ class File extends Base{
         Label aux_l = current_ertlgraph.add(new ERmbinop(Mbinop.Mmov,Register.rax,aux.r2,aux.l));
         aux_l = current_ertlgraph.add(new ERmbinop(aux.m,aux.r1,Register.rax,aux_l));
         aux_l = current_ertlgraph.add(new ERconst(0,Register.rdx,aux_l));
-        aux_l = current_ertlgraph.add(new ERmbinop(Mbinop.Mmov,Register.rdx,Register.rbx,aux_l));
         current_ertlgraph.put(l,new ERmbinop(Mbinop.Mmov,aux.r2,Register.rax,aux_l));
       }
       else
@@ -349,8 +348,25 @@ class File extends Base{
       Operand op2 = get_operand(aux.r2);
       if(aux.m == Mbinop.Mmov && op1.equals(op2))
         current_ltlgraph.put(l,new Lgoto(aux.l));
+      else if(aux.m == Mbinop.Mmul && (!(op1 instanceof Reg) || !(op2 instanceof Reg))){
+        if(!(op1 instanceof Reg) && !(op2 instanceof Reg)){
+          aux_l = current_ltlgraph.add(new Lmbinop(Mbinop.Mmov,new Reg(Register.tmp2),op2,aux.l));
+          aux_l = current_ltlgraph.add(new Lmbinop(aux.m,new Reg(Register.tmp1),new Reg(Register.tmp2),aux_l));
+          aux_l = current_ltlgraph.add(new Lmbinop(Mbinop.Mmov,op2,new Reg(Register.tmp2),aux_l));
+          current_ltlgraph.put(l,new Lmbinop(Mbinop.Mmov,op1,new Reg(Register.tmp1),aux_l));
+        }
+        else if(!(op1 instanceof Reg)){
+          aux_l = current_ltlgraph.add(new Lmbinop(aux.m,new Reg(Register.tmp1),op2,aux.l));
+          current_ltlgraph.put(l,new Lmbinop(Mbinop.Mmov,op1,new Reg(Register.tmp1),aux_l));
+        }
+        else{
+          aux_l = current_ltlgraph.add(new Lmbinop(Mbinop.Mmov,new Reg(Register.tmp2),op2,aux.l));
+          aux_l = current_ltlgraph.add(new Lmbinop(aux.m,op1,new Reg(Register.tmp2),aux_l));
+          current_ltlgraph.put(l,new Lmbinop(Mbinop.Mmov,op2,new Reg(Register.tmp2),aux_l));
+        }
+      }
       else if(!(op1 instanceof Reg) && !(op2 instanceof Reg)){
-        aux_l = current_ltlgraph.add(new Lmbinop(aux.m,new Reg(Register.tmp1),new Reg(Register.tmp2),aux.l));
+        aux_l = current_ltlgraph.add(new Lmbinop(aux.m,new Reg(Register.tmp1),op2,aux.l));
         current_ltlgraph.put(l,new Lmbinop(Mbinop.Mmov,op1,new Reg(Register.tmp1),aux_l));
       }
       else
@@ -375,7 +391,7 @@ class File extends Base{
     else if(er instanceof ERset_param){
       ERget_param aux = (ERget_param)er;
       Operand op = get_operand(aux.r);
-      int new_k = activation_table_size + aux.i;
+      int new_k = activation_table_size + 8*aux.i;
       if(op instanceof Reg){
         current_ltlgraph.put(l,new Lstore(((Reg)op).r,Register.rsp,new_k,aux.l));
       }
@@ -387,7 +403,7 @@ class File extends Base{
     else if(er instanceof ERget_param){
       ERget_param aux = (ERget_param)er;
       Operand op = get_operand(aux.r);
-      int new_k = activation_table_size + aux.i;
+      int new_k = activation_table_size + 8*aux.i;
       if(op instanceof Reg){
         current_ltlgraph.put(l,new Lload(Register.rsp,new_k,((Reg)op).r,aux.l));
       }

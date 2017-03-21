@@ -1,5 +1,5 @@
-import java_cup.runtime.*;
 import java.util.*;
+import java_cup.runtime.*;
 
 parser code {:
   public void report_error(String message, Object info) {
@@ -27,13 +27,36 @@ parser code {:
 
 terminal String IDENT;
 terminal Integer CST;
-terminal IF, ELSE, RETURN,
-          AND, OR, NOT,
-          EQ, NE, LT, LE, GT, GE,
-          TYPE, STRUCT, ARROW, WHILE, SIZEOF,
-          LP, RP, LC, RC, COMMA, EQUAL, SCOLON,
-		      PLUS, MINUS, TIMES, DIV;
-terminal UMINUS, IFTHEN;
+terminal IF;
+terminal ELSE;
+terminal RETURN;
+terminal EQUAL;
+terminal OR;
+terminal AND;
+terminal EQ;
+terminal NE;
+terminal LT;
+terminal LE;
+terminal GT;
+terminal GE;
+terminal PLUS;
+terminal MINUS;
+terminal TIMES;
+terminal DIV;
+terminal NOT;
+terminal TYPE;
+terminal STRUCT;
+terminal ARROW;
+terminal WHILE;
+terminal SIZEOF;
+terminal LP;
+terminal RP;
+terminal LC;
+terminal RC;
+terminal COMMA;
+terminal SCOLON;
+terminal UMINUS;
+terminal IFTHEN;
 
 non terminal File file;
 non terminal Binop binop;

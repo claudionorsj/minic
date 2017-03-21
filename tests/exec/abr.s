@@ -102,37 +102,33 @@ L68:
 L70:
 	movq $1, %rcx
 	jmp L69
-	jmp L71
 L80:
 	movq $1, %rax
 	jmp L55
 print_int:
 	subq $16, %rsp
-	movq %rbx, 8(%rsp)
 	movq %rdi, 0(%rsp)
-	movq 0(%rsp), %rbx
+	movq 0(%rsp), %rax
 	movq $10, %rdi
-	movq %rbx, %rax
-	movq %rdx, %rbx
 	movq $0, %rdx
 	idivq %rdi
-	movq %rax, %rbx
+	movq %rax, 8(%rsp)
 	movq 0(%rsp), %rdi
 	cmpq $9, %rdi
 	jg L96
 L94:
 	movq 0(%rsp), %rdi
-	movq $10, %rcx
-	imulq %rbx, %rcx
-	subq %rcx, %rdi
+	movq $10, %rsi
+	movq 8(%rsp), %rcx
+	imulq %rcx, %rsi
+	subq %rsi, %rdi
 	addq $48, %rdi
 	call putchar
 	movq $0, %rax
-	movq 8(%rsp), %rbx
 	addq $16, %rsp
 	ret
 L96:
-	movq %rbx, %rdi
+	movq 8(%rsp), %rdi
 	call print_int
 	jmp L94
 print:
@@ -238,14 +234,10 @@ L139:
 	movq $0, %rax
 	addq $8, %rsp
 	ret
-	jmp L139
 L147:
 	movq $1, %rdi
 	jmp L146
-	jmp L139
-	jmp L139
 L158:
 	movq $1, %rdi
 	jmp L157
-	jmp L139
 	.data

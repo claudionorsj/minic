@@ -12,9 +12,6 @@ class Ebinop extends Expr {
     this.binop = binop;
     this.expr1 = expr1;
     this.expr2 = expr2;
-    // System.out.println(binop);
-    // System.out.println(expr1);
-    // System.out.println(expr2);
   }
 
   void semantic_analysis(LinkedList<String> errors){
@@ -47,6 +44,7 @@ class Ebinop extends Expr {
   }
 
   Label generate_rtl(Register value_r, Label next_l){
+    
     if(binop == Binop.Baff){
       Label aux_l;
       if(expr1 instanceof LVident){
@@ -69,17 +67,15 @@ class Ebinop extends Expr {
     else if(binop == Binop.Band || binop == Binop.Bor || binop == Binop.Blt || binop == Binop.Ble || binop == Binop.Bgt || binop == Binop.Bge || binop == Binop.Beq || binop == Binop.Bne)
       return generate_rtl_c(current_rtlgraph.add(new Rconst(1,value_r,next_l)),current_rtlgraph.add(new Rconst(0,value_r,next_l)));
     else{
-      if(expr1 instanceof Ecst && expr2 instanceof Ecst){
+      if(expr1 instanceof Ecst && expr2 instanceof Ecst && binop != Binop.Bdiv){
         int v1 = ((Ecst)expr1).cst;
         int v2 = ((Ecst)expr2).cst;
         if(binop == Binop.Badd)
           return current_rtlgraph.add(new Rconst(v1+v2,value_r,next_l));
         else if(binop == Binop.Bsub)
           return current_rtlgraph.add(new Rconst(v1-v2,value_r,next_l));
-        else if(binop == Binop.Bmul)
-          return current_rtlgraph.add(new Rconst(v1*v2,value_r,next_l));
         else
-          return current_rtlgraph.add(new Rconst(v1/v2,value_r,next_l));
+          return current_rtlgraph.add(new Rconst(v1*v2,value_r,next_l));
       }
       Mbinop mbinop;
       Register aux_r = new Register();

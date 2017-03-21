@@ -25,10 +25,6 @@ class Lin implements LTLVisitor {
       asm.label(ltlfun.name);
       lin(ltlfun.entry);
     }
-    // asm.label("putchar");
-    // asm.ret();
-    // asm.label("sbrk");
-    // asm.ret();
     asm.printToFile(s);
   }
 
@@ -62,55 +58,54 @@ class Lin implements LTLVisitor {
   }
   public void visit(Lmubranch o) {
     if(visited.contains(o.l1) && visited.contains(o.l2)){
+      asm.needLabel(o.l1);
       jcc(o.m,o.r.name,o.l1,false);
-      asm.jmp(o.l2.name);
+      lin(o.l2);
     }
     else if(visited.contains(o.l2)){
+      asm.needLabel(o.l2);
       jcc(o.m,o.r.name,o.l2,true);
       lin(o.l1);
-      lin(o.l2);
     }
     else if(visited.contains(o.l1)){
+      asm.needLabel(o.l1);
       jcc(o.m,o.r.name,o.l1,false);
       lin(o.l2);
-      lin(o.l1);
     }
     else{
+      asm.needLabel(o.l1);
       jcc(o.m,o.r.name,o.l1,false);
       lin(o.l2);
-      lin(o.l1);
-      asm.needLabel(o.l1);
+      if(!visited.contains(o.l1))
+        lin(o.l1);
     }
   }
   public void visit(Lmbbranch o) {
     if(visited.contains(o.l1) && visited.contains(o.l2)){
+      asm.needLabel(o.l1);
       jcc(o.m,o.r1.name,o.r2.name,o.l1,false);
-      asm.jmp(o.l2.name);
+      lin(o.l2);
     }
     else if(visited.contains(o.l2)){
+      asm.needLabel(o.l2);
       jcc(o.m,o.r1.name,o.r2.name,o.l2,true);
       lin(o.l1);
-      lin(o.l2);
     }
     else if(visited.contains(o.l1)){
+      asm.needLabel(o.l1);
       jcc(o.m,o.r1.name,o.r2.name,o.l1,false);
       lin(o.l2);
-      lin(o.l1);
     }
     else{
+      asm.needLabel(o.l1);
       jcc(o.m,o.r1.name,o.r2.name,o.l1,false);
       lin(o.l2);
-      lin(o.l1);
-      asm.needLabel(o.l1);
+      if(!visited.contains(o.l1))
+        lin(o.l1);
     }
   }
   public void visit(Lgoto o) {
-    if(visited.contains(o.l)){
-      asm.needLabel(o.l);
-      asm.jmp(o.l.name);
-    }
-    else
-      lin(o.l);
+    lin(o.l);
   }
   public void visit(Lreturn o) {
     asm.ret();

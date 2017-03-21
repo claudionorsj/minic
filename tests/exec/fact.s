@@ -7,7 +7,9 @@ fact:
 	movq %rdi, 0(%rsp)
 	subq $1, %rdi
 	call fact
-	imulq %rax, 0(%rsp)
+	movq 0(%rsp), %r11
+	imulq %rax, %r11
+	movq %r11, 0(%rsp)
 L1:
 	movq 0(%rsp), %rax
 	addq $8, %rsp
